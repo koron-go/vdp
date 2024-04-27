@@ -9,3 +9,4 @@
 * <https://ja.wikipedia.org/wiki/TMS9918>
 * <https://www.msx.org/wiki/Texas_Instruments_TMS9918>
 * <http://www.cs.columbia.edu/~sedwards/papers/TMS9918.pdf>
+* [MSXの周辺ペリフェラル](https://www.wizforest.com/OldGood/MSX1/MSX1_2.html)
