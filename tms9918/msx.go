@@ -3,6 +3,8 @@ package tsm9918
 func MSXScreen0(vdp *VDP) {
 	vdp.Register2.ResetSet(0x0F, 0x00) // 0x0000: name table
 	vdp.Register4.ResetSet(0x07, 0x01) // 0x0800: pattern generator table
+	// setup color
+	//vdp.Register7 = 0xF4
 }
 
 func MSXScreen1(vdp *VDP) {
@@ -11,6 +13,11 @@ func MSXScreen1(vdp *VDP) {
 	vdp.Register3.ResetSet(0xFF, 0x80) // 0x2000: color table
 	vdp.Register5.ResetSet(0x7F, 0x36) // 0x1B00: sprite attribute table
 	vdp.Register6.ResetSet(0x07, 0x07) // 0x3800: sprite generator table
+	// setup color
+	//vdp.Register7 = 0x07
+	//for i := range 32 {
+	//	vdp.VRAM[0x2000+i] = 0xF4
+	//}
 }
 
 func MSXScreen2(vdp *VDP) {
