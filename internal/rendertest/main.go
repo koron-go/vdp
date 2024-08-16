@@ -33,6 +33,7 @@ func main() {
 	vdp.Render(img)
 	dur := time.Since(start)
 	log.Printf("rendered in %d", dur)
+	log.Printf("start=%s", start)
 
 	// output as PNG
 	f, err := os.Create("test.png")
