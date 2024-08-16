@@ -1,4 +1,4 @@
-package tsm9918
+package tms9918
 
 import (
 	"testing"

@@ -1,4 +1,4 @@
-package tsm9918
+package tms9918
 
 func MSXScreen0(vdp *VDP) {
 	vdp.Register2.ResetSet(0x0F, 0x00) // 0x0000: name table
