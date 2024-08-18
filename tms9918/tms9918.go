@@ -239,14 +239,14 @@ func (v *VDP) renderGraphics1Plane(scr *image.Paletted) {
 			p := addr.patternGenerator + int(m)*8
 			pattern := v.VRAM[p : p+8]
 			cv := v.VRAM[addr.colorTable+int(m)/8]
-			color0, color1 := uint8(cv&0x0F), uint8(cv&0xF0>>4)
+			colors := []uint8{
+				uint8(cv & 0x0F),
+				uint8(cv & 0xf0 >> 4),
+			}
 			for y := range 8 {
 				p := pattern[y]
 				for x := range 8 {
-					c := color0
-					if p&(0x80>>x) != 0 {
-						c = color1
-					}
+					c := colors[(p>>(7-x))&0x01]
 					scr.SetColorIndex(baseX+x, baseY+y, c)
 				}
 			}
