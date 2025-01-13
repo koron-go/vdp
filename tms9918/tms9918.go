@@ -1,3 +1,6 @@
+/*
+Package tms9918 provides TMS9918 (VDP) emulator.
+*/
 package tms9918
 
 import (
@@ -6,6 +9,7 @@ import (
 	"image/color"
 )
 
+// VDP is TMS9918 (VDP) emulation object.
 type VDP struct {
 	Register0 Register
 	Register1 Register
@@ -21,26 +25,32 @@ type VDP struct {
 	VRAM []uint8
 }
 
+// Register represents a register for TMS9918.
 type Register uint8
 
+// GetBit gets a n'th bit flag of the register.
 func (r Register) GetBit(n int) bool {
 	return r&(0x80>>n) != 0
 }
 
+// SetBit raises a n'th bit flag of the register.
 func (r *Register) SetBit(n int) {
 	*r |= (0x80 >> n)
 }
 
+// ResetBit resets a n'th bit flag of the register.
 func (r *Register) ResetBit(n int) {
 	*r &= ^(0x80 >> n)
 }
 
+// ResetSet resets bits and sets bits of the register.
 func (r *Register) ResetSet(reset, set uint8) {
 	*r = *r&^Register(reset) | Register(set)
 }
 
+// New creates a new VDP (TMS9918) object.
 func New(vram []uint8) *VDP {
-	if len(vram) < 4090 {
+	if len(vram) < 4096 {
 		panic("VRAM sizes less than 4K (4096) are not supported")
 	}
 	vdp := &VDP{VRAM: vram}
@@ -50,6 +60,7 @@ func New(vram []uint8) *VDP {
 	return vdp
 }
 
+// Palette is TMS9918's default palette.
 var Palette = color.Palette{
 	color.RGBA{0x00, 0x00, 0x00, 0x00}, // 0: TRANSPARENT
 	color.RGBA{0x00, 0x08, 0x00, 0xFF}, // 1: BLACK
@@ -69,6 +80,7 @@ var Palette = color.Palette{
 	color.RGBA{0xF4, 0xFF, 0xF1, 0xFF}, // F: WHITE
 }
 
+// NewPaletted creates a paletted image to be rendered by VDP.
 func (v *VDP) NewPaletted(rect image.Rectangle) (*image.Paletted, error) {
 	if rect.Dx() < 256 {
 		return nil, errors.New("width must be at least 256")
@@ -177,6 +189,7 @@ func (v *VDP) spriteParams() spriteParams {
 	}
 }
 
+// Render renders VDP image to image.Palleted
 func (v *VDP) Render(scr *image.Paletted) {
 	v.renderBackdropPlane(scr)
 	switch v.mode() {
@@ -264,17 +277,17 @@ func (v *VDP) renderGraphics2Plane(scr *image.Paletted) {
 			p := addr.patternGenerator + i*256*8 + int(m)*8
 			pattern := v.VRAM[p : p+8]
 			cp := addr.colorTable + i*256*8 + int(m)*8
-			colors := v.VRAM[cp : cp+8]
+			csub := v.VRAM[cp : cp+8]
 			baseX := offX + (j%32)*8
 			baseY := offY + (i*8+j/32)*8
 			for y := range 8 {
 				p := pattern[y]
-				color0, color1 := uint8(colors[y]&0x0F), uint8(colors[y]&0xF0>>4)
+				colors := []uint8{
+					uint8(csub[y] & 0x0F),
+					uint8(csub[y] & 0xf0 >> 4),
+				}
 				for x := range 8 {
-					c := color0
-					if p&(0x80>>x) != 0 {
-						c = color1
-					}
+					c := colors[(p>>(7-x))&0x01]
 					scr.SetColorIndex(baseX+x, baseY+y, c)
 				}
 			}
@@ -314,7 +327,10 @@ func (v *VDP) renderTextPlane(scr *image.Paletted) {
 	r := v.calcRenderArea(scr)
 	offX, offY := r.Min.X, r.Min.Y
 	addr := v.baseAddresses()
-	color0, color1 := v.textColorIndex(), v.backdropColorIndex()
+	colors := []uint8{
+		v.backdropColorIndex(),
+		v.textColorIndex(),
+	}
 	for cy := 0; cy < 24; cy++ {
 		baseY := offY + cy*8
 		for cx := 0; cx < 40; cx++ {
@@ -325,10 +341,7 @@ func (v *VDP) renderTextPlane(scr *image.Paletted) {
 			for y := range 8 {
 				p := pattern[y]
 				for x := range 6 {
-					c := color0
-					if p&(0x80>>x) != 0 {
-						c = color1
-					}
+					c := colors[(p>>(7-x))&0x01]
 					scr.SetColorIndex(baseX+x, baseY+y, c)
 				}
 			}

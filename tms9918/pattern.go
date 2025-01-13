@@ -1,5 +1,6 @@
 package tms9918
 
+// ReferencePattern is the default pattern described in the TMS9918 datasheet.
 var ReferencePattern = []uint8{
 	0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // (SPACE)
 	0x20, 0x20, 0x20, 0x20, 0x20, 0x00, 0x20, 0x00, // !
@@ -101,6 +102,7 @@ var ReferencePattern = []uint8{
 	0xA8, 0x50, 0xA8, 0x50, 0xA8, 0x50, 0xA8, 0x00, // (0x7F)
 }
 
+// SetupReferencePattern sets up a default pattern in the VDP.
 func SetupReferencePattern(vdp *VDP) {
 	start := vdp.patternGeneratorBaseAddress() + 8*0x20
 	copy(vdp.VRAM[start:start+len(ReferencePattern)], ReferencePattern)

@@ -1,5 +1,6 @@
 package tms9918
 
+// MSXScreen0 sets the VDP to Screen 0 mode on MSX
 func MSXScreen0(vdp *VDP) {
 	vdp.Register2.ResetSet(0x0F, 0x00) // 0x0000: name table
 	vdp.Register4.ResetSet(0x07, 0x01) // 0x0800: pattern generator table
@@ -7,6 +8,7 @@ func MSXScreen0(vdp *VDP) {
 	//vdp.Register7 = 0xF4
 }
 
+// MSXScreen1 sets the VDP to Screen 1 mode on MSX
 func MSXScreen1(vdp *VDP) {
 	vdp.Register4.ResetSet(0x07, 0x00) // 0x0000: pattern generator table
 	vdp.Register2.ResetSet(0x0F, 0x06) // 0x1800: name table
@@ -20,6 +22,7 @@ func MSXScreen1(vdp *VDP) {
 	//}
 }
 
+// MSXScreen2 sets the VDP to Screen 2 mode on MSX
 func MSXScreen2(vdp *VDP) {
 	vdp.Register4.ResetSet(0x07, 0x00) // 0x0000: pattern generator table
 	vdp.Register2.ResetSet(0x0F, 0x06) // 0x1800: name table
@@ -28,6 +31,7 @@ func MSXScreen2(vdp *VDP) {
 	vdp.Register6.ResetSet(0x07, 0x07) // 0x3800: sprite generator table
 }
 
+// MSXScreen3 sets the VDP to Screen 3 mode on MSX
 func MSXScreen3(vdp *VDP) {
 	vdp.Register4.ResetSet(0x07, 0x00) // 0x0000: pattern generator table
 	vdp.Register2.ResetSet(0x0F, 0x02) // 0x0800: name table
